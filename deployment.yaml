@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-web-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-web-app
+  template:
+    metadata:
+      labels:
+        app: flask-web-app
+    spec:
+      containers:
+        - image: gcr.io/devops-case/flask-web-app:1.0
+          name: flask-web-app
+          ports:
+            - containerPort: 5000
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-web-app-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 5000
+  selector:
+    app: flask-web-app
+  type: LoadBalancer
